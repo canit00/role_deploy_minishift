@@ -1,0 +1,6 @@
+---
+# defaults file for role_deploy_minishift
+driver_checksum: 'md5:fb2ded7b5b20400ef66f0adbc384364e'
+minishift_checksum: 'sha256:2b048b43d146c7ed05b7e4ed60e19c268eea08ad38f056b3bbf0288a9d86aeba'
+driver_url: 'https://github.com/dhiltgen/docker-machine-kvm/releases/download/v0.10.0/docker-machine-driver-kvm-centos7'
+minishift_url: 'https://github.com/minishift/minishift/releases/download/v1.30.0/minishift-1.30.0-linux-amd64.tgz'

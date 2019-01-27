@@ -1,0 +1,65 @@
+---
+# tasks file for role_deploy_minishift
+- name: ensure @virtualization is installed
+  package:
+    name: '@virtualization,libselinux-python'
+    state: latest
+
+- name: add user to libvirt group
+  user:
+    name: "{{ user }}"
+    shell: /bin/bash
+    groups: libvirt
+    append: yes
+
+- name: install vm driver - (kvm)
+  get_url:
+    url: "{{ driver_url }}"
+    dest: /usr/local/bin/docker-machine-driver-kvm
+    checksum: "{{ driver_checksum }}"
+    mode: 555
+  notify:
+  - restart libvirtd
+
+- name: edit quemu's default network - domain name
+  lineinfile:
+    path: /etc/libvirt/qemu/networks/default.xml
+    backup: yes
+    insertafter: ' \<mac address\='
+    line: "  <domain name='{{ domain }}' localOnly='yes'/>"
+    state: present
+  notify:
+  - restart libvirtd
+
+- name: start libvirt's defalt network
+  command: "virsh {{ item }}"
+  with_items:
+    - 'net-start default'
+    - 'net-autostart default'
+  ignore_errors: yes
+
+- name: install minishift
+  block:
+  - name: download minishift
+    get_url:
+      url: "{{ minishift_url }}"
+      dest: /tmp/
+      checksum: "{{ minishift_checksum }}"
+
+  - name: Unarchive minishift
+    unarchive:
+      src: /tmp/minishift-1.30.0-linux-amd64.tgz
+      dest: /tmp
+      remote_src: yes
+
+  - name: copy minishift to /usr/local/bin
+    copy:
+      src: /tmp/minishift-1.30.0-linux-amd64/minishift
+      dest: /usr/local/bin/
+      mode: 555
+      remote_src: yes
+
+  - name: clean up
+    file:
+      path: /tmp/minishift-1.30.0-linux-amd64
+      state: absent
