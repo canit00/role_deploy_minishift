@@ -54,7 +54,7 @@
 
   - name: copy minishift to /usr/local/bin
     copy:
-      src: /tmp/minishift-1.30.0-linux-amd64/minishift
+      src: "/tmp/{{ minishift_url }}"
       dest: /usr/local/bin/
       mode: 555
       remote_src: yes
