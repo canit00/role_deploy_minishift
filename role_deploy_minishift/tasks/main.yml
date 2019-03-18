@@ -48,18 +48,18 @@
 
   - name: Unarchive minishift
     unarchive:
-      src: /tmp/minishift-1.30.0-linux-amd64.tgz
+      src: "/tmp/{{ minishift }}"
       dest: /tmp
       remote_src: yes
 
   - name: copy minishift to /usr/local/bin
     copy:
-      src: "/tmp/{{ minishift_url }}"
+      src: "/tmp/{{ minishift }}"
       dest: /usr/local/bin/
       mode: 555
       remote_src: yes
 
   - name: clean up
     file:
-      path: /tmp/minishift-1.30.0-linux-amd64
+      path: "/tmp/{{ minishift }}"
       state: absent
